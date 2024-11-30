@@ -769,7 +769,7 @@ function UserList() {
 
       <Modal show={showPlayerModal} onHide={handleClosePlayerModal} centered>
         <Modal.Header closeButton>
-          <Modal.Title>{isEditMode ? "Edit Player" : "View Player"}</Modal.Title>
+          <Modal.Title>{isEditMode ? "Edit User" : "Add User"}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
@@ -795,7 +795,7 @@ function UserList() {
 
       <Modal show={showEditModal} onHide={handleCloseEditModal} centered>
         <Modal.Header closeButton>
-          <Modal.Title>{isEditMode ? "Edit User" : "View User"}</Modal.Title>
+          <Modal.Title>{isEditMode ? "Edit User" : "Add User"}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>

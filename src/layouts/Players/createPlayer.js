@@ -4,6 +4,8 @@ import axios from "axios";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Swal from "sweetalert2";
+import imageCompression from 'browser-image-compression';
+
 
 function CreatePlayer() {
     const [show, setShow] = useState(false);
@@ -149,13 +151,43 @@ function CreatePlayer() {
     const handleShow = () => setShow(true);
   
     // Handle input changes
-    const handlePostData = (e) => {
+    // const handlePostData = (e) => {
+    //   const { name, files, value } = e.target;
+    //   if (files) {
+    //     setData((prevState) => ({
+    //       ...prevState,
+    //       [name]: files[0],
+    //     }));
+    //   } else {
+    //     setData((prevState) => ({
+    //       ...prevState,
+    //       [name]: value,
+    //     }));
+    //   }
+    // };
+
+
+    const handlePostData = async (e) => {
       const { name, files, value } = e.target;
-      if (files) {
-        setData((prevState) => ({
-          ...prevState,
-          [name]: files[0],
-        }));
+    
+      if (files && name === "profile_image") {
+        const file = files[0];
+    
+        try {
+          // Compress the image
+          const compressedFile = await imageCompression(file, {
+            maxSizeMB: 1, // Limit size to 1MB
+            maxWidthOrHeight: 1024, // Resize if needed
+          });
+    
+          setData((prevState) => ({
+            ...prevState,
+            [name]: compressedFile,
+          }));
+        } catch (error) {
+          console.error("Error compressing image:", error);
+          alert("Failed to compress image. Please try again.");
+        }
       } else {
         setData((prevState) => ({
           ...prevState,
@@ -163,6 +195,8 @@ function CreatePlayer() {
         }));
       }
     };
+    
+    
 
     // Fetch player data
     const fetchPlayerData = () => {
@@ -186,59 +220,117 @@ function CreatePlayer() {
   
    
    
+    // const handleSubmit = () => {
+    //     // Check if profile_image is selected before creating player
+    //     if (!data.profile_image) {
+    //         alert("Please select a profile image before submitting.");
+    //         return;
+    //     }
+    
+    //     const formData = new FormData();
+    //     for (const key in data) {
+    //         // Only append valid data to FormData
+    //         if (data[key]) {
+    //             formData.append(key, data[key]);
+    //         }
+    //     }
+    
+    //     const token = localStorage.getItem("admin_token");
+    
+    //     if (editId) {
+    //         // Update existing player
+    //         axios
+    //             .patch(`http://35.200.147.33/api/admin/updateplayer/${editId}`, formData, {
+    //                 headers: {
+    //                   Authorization: `Bearer ${token}`,
+    //                 },
+    //             })
+    //             .then(() => {
+    //                 fetchPlayerData(); // Re-fetch data after updating
+    //                 handleClose();
+    //                 showAutoCloseAlert("Player Edit successfully.");
+    //             })
+    //             .catch((error) => {
+    //                 console.error("Error updating player:", error);
+    //             });
+    //     } else {
+    //         // Add new player
+    //         axios
+    //             .post(`http://35.200.147.33/api/admin/createPlayer`, formData, {
+    //                 headers: {
+    //                   Authorization: `Bearer ${token}`,
+    //                 },
+    //             })
+    //             .then(() => {
+    //                 fetchPlayerData(); // Re-fetch data after adding
+    //                 handleClose();
+    //                 showAutoCloseAlert("Player Create successfully.");
+    //             })
+    //             .catch((error) => {
+    //                 console.error("Error adding player:", error);
+    //                 // Optionally handle the error display
+    //                 showAutoError(error.response.data.message || "An error occurred while creating the player.");
+    //             });
+    //     }
+    // };
+    
     const handleSubmit = () => {
-        // Check if profile_image is selected before creating player
-        if (!data.profile_image) {
-            alert("Please select a profile image before submitting.");
-            return;
-        }
+      console.log("Submitting Data:", data);
+      console.log("Edit ID:", editId);
     
-        const formData = new FormData();
-        for (const key in data) {
-            // Only append valid data to FormData
-            if (data[key]) {
-                formData.append(key, data[key]);
-            }
-        }
+      if (!data.profile_image && !data.profile_image_url) {
+        alert("Please select a profile image.");
+        return;
+      }
     
-        const token = localStorage.getItem("admin_token");
+      const formData = new FormData();
+      formData.append("name", data.name || "");
+      formData.append("value", data.value || "");
     
-        if (editId) {
-            // Update existing player
-            axios
-                .patch(`http://35.200.147.33/api/admin/updateplayer/${editId}`, formData, {
-                    headers: {
-                      Authorization: `Bearer ${token}`,
-                    },
-                })
-                .then(() => {
-                    fetchPlayerData(); // Re-fetch data after updating
-                    handleClose();
-                    showAutoCloseAlert("Player Edit successfully.");
-                })
-                .catch((error) => {
-                    console.error("Error updating player:", error);
-                });
-        } else {
-            // Add new player
-            axios
-                .post(`http://35.200.147.33/api/admin/createPlayer`, formData, {
-                    headers: {
-                      Authorization: `Bearer ${token}`,
-                    },
-                })
-                .then(() => {
-                    fetchPlayerData(); // Re-fetch data after adding
-                    handleClose();
-                    showAutoCloseAlert("Player Create successfully.");
-                })
-                .catch((error) => {
-                    console.error("Error adding player:", error);
-                    // Optionally handle the error display
-                    showAutoError(error.response.data.message || "An error occurred while creating the player.");
-                });
-        }
+      if (data.profile_image) {
+        formData.append("profile_image", data.profile_image);
+      }
+    
+      const token = localStorage.getItem("admin_token");
+    
+      if (editId) {
+        // Update existing player
+        axios
+          .patch(`http://35.200.147.33/api/admin/updateplayer/${editId}`, formData, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then(() => {
+            fetchPlayerData(); // Refresh data
+            handleClose();
+            showAutoCloseAlert("Player updated successfully.");
+          })
+          .catch((error) => {
+            console.error("Error updating player:", error);
+            alert("An error occurred while updating the player.");
+          });
+      } else {
+        // Create new player
+        axios
+          .post(`http://35.200.147.33/api/admin/createPlayer`, formData, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then(() => {
+            fetchPlayerData(); // Refresh data
+            handleClose();
+            showAutoCloseAlert("Player created successfully.");
+          })
+          .catch((error) => {
+            console.error("Error creating player:", error);
+            alert("An error occurred while creating the player.");
+          });
+      }
     };
+    
+
     const handleEdit = (id) => {
         const category = productData.find((item) => item._id === id);
         if (category) {
@@ -319,7 +411,7 @@ function CreatePlayer() {
               </Button>
   
               <Modal show={show} onHide={handleClose} backdrop="static" keyboard={false} centered>
-                <Modal.Header closeButton>
+                <Modal.Header >
                   <Modal.Title>{editId ? "Edit Player" : "Add Player"}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
@@ -351,7 +443,7 @@ function CreatePlayer() {
                     <Row className="mb-3">
                       <Col>
                         <Form.Label>Profile Image</Form.Label>
-                        <Form.Control type="file" onChange={handlePostData} name="profile_image" />
+                        <Form.Control type="file"  accept="image/jpeg, image/png" onChange={handlePostData} name="profile_image" />
                       </Col>
                     </Row>
                   </Form>
