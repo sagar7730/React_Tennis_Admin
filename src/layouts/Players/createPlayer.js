@@ -308,7 +308,7 @@ function CreatePlayer() {
           })
           .catch((error) => {
             console.error("Error updating player:", error);
-            alert("An error occurred while updating the player.");
+            showAutoCloseAlert("An error occurred while updating the player.");
           });
       } else {
         // Create new player
@@ -325,7 +325,7 @@ function CreatePlayer() {
           })
           .catch((error) => {
             console.error("Error creating player:", error);
-            alert("An error occurred while creating the player.");
+            showAutoError("An error occurred while creating the player.");
           });
       }
     };
