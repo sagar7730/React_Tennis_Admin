@@ -109,7 +109,7 @@ import { useSoftUIController } from "context";
 const SoftInput = forwardRef(({ size, icon, error, success, disabled, ...rest }, ref) => {
   let template;
   const [controller] = useSoftUIController();
-  const { direction = "ltr" } = controller || {}; // Default to "ltr" if controller is undefined
+  const { direction } = controller || {}; // Default to "ltr" if controller is undefined
   const iconDirection = icon?.direction || "none"; // Ensure safe access to icon.direction
 
   if (icon?.component && icon?.direction === "left") {
