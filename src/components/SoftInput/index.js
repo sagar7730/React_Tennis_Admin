@@ -109,10 +109,10 @@ import { useSoftUIController } from "context";
 const SoftInput = forwardRef(({ size, icon, error, success, disabled, ...rest }, ref) => {
   let template;
   const [controller] = useSoftUIController();
-  const { direction = "ltr" } = controller || {}; // Fallback to "ltr" if controller is undefined
-  const iconDirection = icon?.direction || "none"; // Fallback to "none" if icon or icon.direction is undefined
+  const { direction = "ltr" } = controller || {}; // Default to "ltr" if controller is undefined
+  const iconDirection = icon?.direction || "none"; // Ensure safe access to icon.direction
 
-  if (icon.component && icon.direction === "left") {
+  if (icon?.component && icon?.direction === "left") {
     template = (
       <SoftInputWithIconRoot ref={ref} ownerState={{ error, success, disabled }}>
         <SoftInputIconBoxRoot ownerState={{ size }}>
@@ -126,7 +126,7 @@ const SoftInput = forwardRef(({ size, icon, error, success, disabled, ...rest },
         />
       </SoftInputWithIconRoot>
     );
-  } else if (icon.component && icon.direction === "right") {
+  } else if (icon?.component && icon?.direction === "right") {
     template = (
       <SoftInputWithIconRoot ref={ref} ownerState={{ error, success, disabled }}>
         <SoftInputRoot
@@ -149,6 +149,7 @@ const SoftInput = forwardRef(({ size, icon, error, success, disabled, ...rest },
   return template;
 });
 
+// Setting default values for the props of SoftInput
 SoftInput.defaultProps = {
   size: "medium",
   icon: {
@@ -160,6 +161,7 @@ SoftInput.defaultProps = {
   disabled: false,
 };
 
+// Typechecking props for the SoftInput
 SoftInput.propTypes = {
   size: PropTypes.oneOf(["small", "medium", "large"]),
   icon: PropTypes.shape({
