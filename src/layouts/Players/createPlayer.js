@@ -34,7 +34,7 @@ function CreatePlayer() {
   
       axios
         .post(
-          `http://35.200.147.33/api/admin/market-freeze`,
+          `http://34.47.154.170/api/admin/market-freeze`,
           { freeze: newFreezeState },
           {
             headers: {
@@ -91,7 +91,7 @@ function CreatePlayer() {
     const fetchFreezeStatus = () => {
       const token = localStorage.getItem("admin_token");
       axios
-        .get("http://35.200.147.33/api/admin/market-status", {
+        .get("http://34.47.154.170/api/admin/market-status", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -121,7 +121,7 @@ function CreatePlayer() {
     //   const newFreezeState = !isFrozen; // Toggle freeze state
   
     //   axios
-    //     .post(`http://35.200.147.33/api/admin/market-freeze`, { freeze: newFreezeState }, {
+    //     .post(`http://34.47.154.170/api/admin/market-freeze`, { freeze: newFreezeState }, {
     //       headers: {
     //         Authorization: `Bearer ${token}`,
     //       },
@@ -202,7 +202,7 @@ function CreatePlayer() {
     const fetchPlayerData = () => {
       const token = localStorage.getItem("admin_token");
       axios
-        .get("http://35.200.147.33/api/admin/players", {
+        .get("http://34.47.154.170/api/admin/players", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -240,7 +240,7 @@ function CreatePlayer() {
     //     if (editId) {
     //         // Update existing player
     //         axios
-    //             .patch(`http://35.200.147.33/api/admin/updateplayer/${editId}`, formData, {
+    //             .patch(`http://34.47.154.170/api/admin/updateplayer/${editId}`, formData, {
     //                 headers: {
     //                   Authorization: `Bearer ${token}`,
     //                 },
@@ -256,7 +256,7 @@ function CreatePlayer() {
     //     } else {
     //         // Add new player
     //         axios
-    //             .post(`http://35.200.147.33/api/admin/createPlayer`, formData, {
+    //             .post(`http://34.47.154.170/api/admin/createPlayer`, formData, {
     //                 headers: {
     //                   Authorization: `Bearer ${token}`,
     //                 },
@@ -296,7 +296,7 @@ function CreatePlayer() {
       if (editId) {
         // Update existing player
         axios
-          .patch(`http://35.200.147.33/api/admin/updateplayer/${editId}`, formData, {
+          .patch(`http://34.47.154.170/api/admin/updateplayer/${editId}`, formData, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -313,7 +313,7 @@ function CreatePlayer() {
       } else {
         // Create new player
         axios
-          .post(`http://35.200.147.33/api/admin/createPlayer`, formData, {
+          .post(`http://34.47.154.170/api/admin/createPlayer`, formData, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -351,7 +351,7 @@ function CreatePlayer() {
       const handleDelete = (id) => {
         const token = localStorage.getItem("admin_token"); // Get token for authentication if required
         axios
-          .delete(`http://35.200.147.33/api/admin/deleteplayer/${id}`, {
+          .delete(`http://34.47.154.170/api/admin/deleteplayer/${id}`, {
             headers: {
               Authorization: `Bearer ${token}`, // Include token in headers if needed
             },
@@ -477,7 +477,7 @@ function CreatePlayer() {
                             {player.profile_image ? (
                               <img
                                 style={{ width: "50px", height: "50px", borderRadius: "50%" }}
-                                src={`http://35.200.147.33/api/images/${player.profile_image}`}
+                                src={`http://34.47.154.170/api/images/${player.profile_image}`}
                                 alt="Profile"
                               />
                             ) : (

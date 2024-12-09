@@ -138,7 +138,7 @@ function SignIn() {
     e.preventDefault(); // Prevent default form submission
 
     try {
-      const response = await axios.post('http://35.200.147.33/api/login', {
+      const response = await axios.post('http://34.47.154.170/api/login', {
         email,
         password,
       });     
