@@ -30,10 +30,10 @@ import { useSoftUIController } from "context";
 const SoftInput = forwardRef(({ size, icon, error, success, disabled, ...rest }, ref) => {
   let template;
   const [controller] = useSoftUIController();
-  const { direction } = controller;
+  // const { direction } = controller;
   // const iconDirection = icon.direction;
 
-  if (icon.component) {
+  if (icon.component ) {
     template = (
       <SoftInputWithIconRoot ref={ref} ownerState={{ error, success, disabled }}>
         <SoftInputIconBoxRoot ownerState={{ size }}>
@@ -43,18 +43,16 @@ const SoftInput = forwardRef(({ size, icon, error, success, disabled, ...rest },
         </SoftInputIconBoxRoot>
         <SoftInputRoot
           {...rest}
-          // ownerState={{ size, error, success, iconDirection, direction, disabled }}
-          ownerState={{ size, error, success,  direction, disabled }}
+          ownerState={{ size, error, success, disabled }}
         />
       </SoftInputWithIconRoot>
     );
-  } else if (icon.component) {
+  } else if (icon.component ) {
     template = (
       <SoftInputWithIconRoot ref={ref} ownerState={{ error, success, disabled }}>
         <SoftInputRoot
           {...rest}
-          // ownerState={{ size, error, success, iconDirection, direction, disabled }}
-          ownerState={{ size, error, success, direction, disabled }}
+          ownerState={{ size, error, success, disabled }}
         />
         <SoftInputIconBoxRoot ownerState={{ size }}>
           <SoftInputIconRoot fontSize="small" ownerState={{ size }}>
