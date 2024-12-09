@@ -31,7 +31,7 @@ const SoftInput = forwardRef(({ size, icon, error, success, disabled, ...rest },
   let template;
   const [controller] = useSoftUIController();
   const { direction } = controller;
-  const iconDirection = icon.direction;
+  // const iconDirection = icon.direction;
 
   if (icon.component && icon.direction === "left") {
     template = (
