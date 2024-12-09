@@ -43,7 +43,8 @@ const SoftInput = forwardRef(({ size, icon, error, success, disabled, ...rest },
         </SoftInputIconBoxRoot>
         <SoftInputRoot
           {...rest}
-          ownerState={{ size, error, success, iconDirection, direction, disabled }}
+          // ownerState={{ size, error, success, iconDirection, direction, disabled }}
+          ownerState={{ size, error, success,  direction, disabled }}
         />
       </SoftInputWithIconRoot>
     );
@@ -52,7 +53,8 @@ const SoftInput = forwardRef(({ size, icon, error, success, disabled, ...rest },
       <SoftInputWithIconRoot ref={ref} ownerState={{ error, success, disabled }}>
         <SoftInputRoot
           {...rest}
-          ownerState={{ size, error, success, iconDirection, direction, disabled }}
+          // ownerState={{ size, error, success, iconDirection, direction, disabled }}
+          ownerState={{ size, error, success, direction, disabled }}
         />
         <SoftInputIconBoxRoot ownerState={{ size }}>
           <SoftInputIconRoot fontSize="small" ownerState={{ size }}>
