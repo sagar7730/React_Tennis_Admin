@@ -199,19 +199,63 @@ function CreatePlayer() {
     
 
     // Fetch player data
-    const fetchPlayerData = () => {
-      const token = localStorage.getItem("admin_token");
-      axios
-        .get("http://34.47.154.170/api/admin/players", {
+    // const fetchPlayerData = () => {
+    //   const token = localStorage.getItem("admin_token");
+    //   axios
+    //     .get("http://34.47.154.170/api/admin/players", {
+    //       headers: {
+    //         Authorization: `Bearer ${token}`,
+    //       },
+    //     })
+    //     .then((response) => {
+    //       setProductData(response.data.data || []);
+    //     })
+    //     .catch((error) => showAutoError("Error fetching player data:", error));
+    // };
+    const fetchPlayerData = async () => {
+      try {
+        const token = localStorage.getItem("admin_token");
+        if (!token) {
+          showAutoError("No token found. Please log in again.");
+          return;
+        }
+    
+        const response = await axios.get("http://34.47.154.170/api/admin/players", {
           headers: {
             Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json", // Ensure proper headers
           },
-        })
-        .then((response) => {
-          setProductData(response.data.data || []);
-        })
-        .catch((error) => showAutoError("Error fetching player data:", error));
+          timeout: 10000, // Optional timeout for handling hanging requests
+        });
+    
+        // Check for expected response structure
+        if (response.status === 200 && response.data?.data) {
+          setProductData(response.data.data);
+        } else {
+          showAutoError(
+            `Unexpected response: ${response.status} - ${response.statusText}`
+          );
+        }
+      } catch (error) {
+        // Handle error cases effectively
+        if (error.response) {
+          // Server responded with a status other than 2xx
+          console.error("Server Error:", error.response.data);
+          showAutoError(
+            `Server error: ${error.response.status} - ${error.response.statusText}`
+          );
+        } else if (error.request) {
+          // Request was made, but no response received
+          console.error("Network Error or No Response:", error.request);
+          showAutoError("Network error: Could not reach the server.");
+        } else {
+          // Something else went wrong during the request setup
+          console.error("Error:", error.message);
+          showAutoError(`Error fetching player data: ${error.message}`);
+        }
+      }
     };
+    
   
     // Fetch categories and player data on component mount
     useEffect(() => {

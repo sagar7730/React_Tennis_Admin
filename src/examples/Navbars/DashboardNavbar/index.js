@@ -16,7 +16,7 @@ Coded by www.creative-tim.com
 import { useState, useEffect } from "react";
 
 // react-router components
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, Navigate, useNavigate } from "react-router-dom";
 
 // prop-types is a library for typechecking of props.
 import PropTypes from "prop-types";
@@ -57,6 +57,7 @@ import {
 // Images
 import team2 from "assets/images/team-2.jpg";
 import logoSpotify from "assets/images/small-logos/logo-spotify.svg";
+import { Button } from "@mui/material";
 
 function DashboardNavbar({ absolute, light, isMini }) {
   const [navbarType, setNavbarType] = useState();
@@ -96,6 +97,8 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const handleOpenMenu = (event) => setOpenMenu(event.currentTarget);
   const handleCloseMenu = () => setOpenMenu(false);
 
+
+  const navigate =useNavigate();
   // Render the notifications menu
   const renderMenu = () => (
     <Menu
@@ -147,6 +150,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
         </SoftBox>
         {isMini ? null : (
           <SoftBox sx={(theme) => navbarRow(theme, { isMini })}>
+           <Button onClick={()=>navigate('/authentication/sign-in')} style={{fontSize:'13px'}}>Logout</Button>
             {/* <SoftBox pr={1}>
               <SoftInput
                 placeholder="type here"
