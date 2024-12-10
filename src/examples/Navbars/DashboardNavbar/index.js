@@ -137,6 +137,16 @@ function DashboardNavbar({ absolute, light, isMini }) {
       />
     </Menu>
   );
+  const handleLogout = () => {
+    // Remove the token from localStorage
+    localStorage.removeItem("admin_token");
+
+    // Log out message or additional cleanup if needed
+    console.log("Admin token removed. User logged out.");
+
+    // Navigate to the sign-in page
+    navigate("/authentication/sign-in");
+  };
 
   return (
     <AppBar
@@ -150,7 +160,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
         </SoftBox>
         {isMini ? null : (
           <SoftBox sx={(theme) => navbarRow(theme, { isMini })}>
-           <Button onClick={()=>navigate('/authentication/sign-in')} style={{fontSize:'13px'}}>Logout</Button>
+           <Button   onClick={handleLogout} style={{fontSize:'13px'}}>Logout</Button>
             {/* <SoftBox pr={1}>
               <SoftInput
                 placeholder="type here"
