@@ -27,7 +27,7 @@ function Usertransation() {
       name.includes(searchTerm.toLowerCase()) || email.includes(searchTerm.toLowerCase())
     );
   });
-  
+
 
   // Function to fetch transactions from the API
   const fetchTransactions = async () => {
@@ -79,13 +79,13 @@ function Usertransation() {
     <DashboardLayout>
       <DashboardNavbar />
       <SoftBox display="flex" justifyContent="flex-end" >
-    <SoftInput
-      placeholder="Search here"
-      icon={{ component: "search", direction: "left" }}
-      value={searchTerm}
-      onChange={(e) => setSearchTerm(e.target.value)}
-    />
-  </SoftBox>
+        <SoftInput
+          placeholder="Search here"
+          icon={{ component: "search", direction: "left" }}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </SoftBox>
       {loading ? (
         <div className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
           <Spinner animation="border" variant="primary" />
@@ -97,10 +97,8 @@ function Usertransation() {
           <Table striped bordered hover>
             <thead>
               <tr>
-                <th>Id</th>
                 <th>Name</th>
                 <th>Email</th>
-                <th>Profile Image</th>
                 <th>Opening Credits</th>
                 <th>Closing Credits</th>
                 <th>Total Credits</th>
@@ -111,19 +109,12 @@ function Usertransation() {
             <tbody>
               {currentItems.map((transaction) => (
                 <tr key={transaction._id}>
-                  <td>{transaction.user_data.user_id}</td>
                   <td>{transaction.user_data.name}</td>
                   <td>{transaction.user_data.email}</td>
-                  <td>
-                    <img
-                      src={`http://34.47.154.170/api/images/${transaction.user_data.profile_image}`}
-                      alt={transaction.user_data.name}
-                      style={{ width: "50px", height: "50px", borderRadius: "50%" }}
-                    />
-                  </td>
-                  <td>{transaction.opening_credits}</td>
-                  <td>{transaction.closing_credits}</td>
-                  <td>{transaction.total_credits}</td>
+                  <td>{Number(transaction.opening_credits).toFixed(2)}</td>
+                  <td>{Number(transaction.closing_credits).toFixed(2)}</td>
+                  <td>{Number(transaction.total_credits).toFixed(2)}</td>
+
                   <td>
                     {new Date(transaction.updatedAt).toLocaleDateString()}{" "}
                   </td>

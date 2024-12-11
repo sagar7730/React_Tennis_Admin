@@ -363,9 +363,9 @@ function UserList() {
         formDataToSend.append("email", formData.email);
         formDataToSend.append("credits", formData.credits);
         formDataToSend.append("password", formData.password);
-        if (profileImage) {
-          formDataToSend.append("profile_image", profileImage);
-        }
+        // if (profileImage) {
+        //   formDataToSend.append("profile_image", profileImage);
+        // }
   
         if (!selectedUser._id) {
           showAutoError("Selected user ID is undefined");
@@ -390,7 +390,7 @@ function UserList() {
                 ? {
                     ...user,
                     ...formData,
-                    profile_image: response.data.profile_image || user.profile_image,
+                    // profile_image: response.data.profile_image || user.profile_image,
                   }
                 : user
             )
@@ -406,9 +406,9 @@ function UserList() {
       formDataToSend.append("email", formData.email);
       formDataToSend.append("credits", formData.credits);
       if (isEditMode) formDataToSend.append("password", formData.password); // Password is optional for edits
-      if (profileImage) {
-        formDataToSend.append("profile_image", profileImage);
-      }
+      // if (profileImage) {
+      //   formDataToSend.append("profile_image", profileImage);
+      // }
         // Add User API
         const response = await axios.post(
           "http://34.47.154.170/api/user/register",
@@ -551,6 +551,8 @@ function UserList() {
 
 
 
+
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -569,8 +571,6 @@ function UserList() {
         <Table striped="columns" responsive="sm" bordered hover>
           <thead>
             <tr>
-              <th>Id</th>
-              <th>Profile Image</th>
               <th>Name</th>
               <th>Email</th>
               <th>Password</th>
@@ -581,14 +581,6 @@ function UserList() {
           <tbody>
             {currentItems.map((user, index) => (
               <tr key={user._id || index}>
-                <td>{user._id}</td>
-                <td>
-                  <img
-                    src={`http://34.47.154.170/api/images/${user.profile_image}`}
-                    alt={user.name}
-                    style={{ width: "50px", height: "50px", borderRadius: "50%" }}
-                  />
-                </td>
                 <td>{user.name}</td>
                 <td>{user.email}</td>
                 <td>{user.password }</td>
@@ -658,10 +650,6 @@ function UserList() {
                 <Table striped bordered>
                   <tbody>
                     <tr>
-                      <td>Id</td>
-                      <td>{selectedUser._id}</td>
-                    </tr>
-                    <tr>
                       <td>Name</td>
                       <td>{selectedUser.name}</td>
                     </tr>
@@ -708,7 +696,6 @@ function UserList() {
                         <thead>
                           <tr>
                             <th style={{ fontSize: "15px" }}>Player Name</th>
-                            <th style={{ fontSize: "15px" }}>Profile Image</th>
                             <th style={{ fontSize: "15px" }}>Value</th>
                             <th style={{ fontSize: "15px" }}>Share Quantity</th>
                             <th style={{ fontSize: "15px" }}>Action</th>
@@ -718,13 +705,6 @@ function UserList() {
                           {selectedUser.team.players.map((player) => (
                             <tr key={player._id}>
                               <td>{player.name}</td>
-                              <td>
-                                <img
-                                  src={`http://34.47.154.170/api/images/${player.profile_image}`}
-                                  alt={player.name}
-                                  style={{ width: "50px", height: "50px", borderRadius: "50%" }}
-                                />
-                              </td>
                               <td>{player.value}</td>
                               <td>{player.share_quantity}</td>
                               <td>
@@ -843,12 +823,12 @@ function UserList() {
                 required
               />
             </Form.Group>
-            {isEditMode && (
+            {/* {isEditMode && (
               <Form.Group controlId="formProfileImage">
                 <Form.Label>Profile Image</Form.Label>
                 <Form.Control type="file" onChange={handleImageChange} />
               </Form.Group>
-            )}
+            )} */}
             <Button variant="primary" type="submit" disabled={loading}>
               {isEditMode ? "Update" : "Submit"}
             </Button>

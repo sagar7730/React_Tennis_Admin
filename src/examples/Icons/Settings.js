@@ -29,7 +29,7 @@ function Settings({ color, size }) {
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
     >
-      <title>settings</title>
+      {/* <title>settings</title> */}
       <g id="Basic-Elements" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
         <g
           id="Rounded-Icons"
