@@ -13,6 +13,8 @@
     "url": "git+https://github.com/creativetimofficial/soft-ui-dashboard-react.git"
   },
   "dependencies": {
+    "@ckeditor/ckeditor5-build-classic": "^44.0.0",
+    "@ckeditor/ckeditor5-react": "^9.4.0",
     "@emotion/cache": "11.11.0",
     "@emotion/react": "11.11.0",
     "@emotion/styled": "11.11.0",
@@ -40,6 +42,7 @@
     "react-quill": "^2.0.0",
     "react-router-dom": "6.11.1",
     "react-scripts": "^5.0.1",
+    "react-textarea-autosize": "^8.5.6",
     "react-toastify": "^10.0.6",
     "stylis": "4.2.0",
     "stylis-plugin-rtl": "2.1.1",
