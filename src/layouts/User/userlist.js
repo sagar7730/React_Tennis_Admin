@@ -96,18 +96,25 @@ function UserList() {
   }, []);
   
 
-  // const handleViewUser = (user) => {
-  //   setSelectedUser(user);
-  //   setShowViewModal(true); // Open the view modal
-  // };
 
+
+  // const handleEditUser = (user) => {
+  //   setSelectedUser(user);
+  //   setFormData({ name: user.name, email: user.email, credits: user.credits,password:user.password });
+  //   setProfileImage(user.profile_image);
+  //   setIsEditMode(true);
+  //   setShowEditModal(true); // Open the edit modal
+  // };
   const handleEditUser = (user) => {
+    const isConfirmed = window.confirm('Are you sure you want to edit this user?');
+    if (!isConfirmed) return; // If user cancels, do nothing
+
     setSelectedUser(user);
-    setFormData({ name: user.name, email: user.email, credits: user.credits,password:user.password });
+    setFormData({ name: user.name, email: user.email, credits: user.credits, password: user.password });
     setProfileImage(user.profile_image);
     setIsEditMode(true);
     setShowEditModal(true); // Open the edit modal
-  };
+};
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -124,6 +131,8 @@ function UserList() {
   };
 
   const handlePlayerEdit = (player) => {
+    const isConfirmed = window.confirm('Are you sure you want to edit this user?');
+    if (!isConfirmed) return; // If user cancels, do nothing
     setSelectedPlayer(player); // Store the player object
     setFormData({ share_quantity: player.share_quantity }); // Set the form data to the current share quantity
     setIsEditMode(true); // Set edit mode to true
@@ -463,6 +472,8 @@ function UserList() {
 
   const handlePlayerDelete = async (playerId) => {
     try {
+      const isConfirmed = window.confirm('Are you sure you want to edit this user?');
+      if (!isConfirmed) return; // If user cancels, do nothing
       const token = localStorage.getItem("admin_token");
 
       setLoading(true); // Set loading to true when starting the delete process
@@ -525,32 +536,59 @@ function UserList() {
   const currentItems = filteredUsers.slice(indexOfFirstItem, indexOfLastItem);
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  const handleDelete = async (userId) => {
-    const token = localStorage.getItem('admin_token');
+//   const handleDelete = async (userId) => {
+//     const token = localStorage.getItem('admin_token');
 
-    try {
-        // Trigger the API call to delete the user
-        const response = await axios.delete(`http://34.47.154.170/api/admin/user/delete/${userId}`, {
-            headers: { Authorization: `Bearer ${token}` },
-        });
+//     try {
+//         // Trigger the API call to delete the user
+//         const response = await axios.delete(`http://34.47.154.170/api/admin/user/delete/${userId}`, {
+//             headers: { Authorization: `Bearer ${token}` },
+//         });
 
-        // If the response is successful (status code 200)
-        if (response.status === 200) {
-            // Remove the deleted user from the list in the state
-            setUsers((prevUsers) => prevUsers.filter((user) => user._id !== userId));
+//         // If the response is successful (status code 200)
+//         if (response.status === 200) {
+//             // Remove the deleted user from the list in the state
+//             setUsers((prevUsers) => prevUsers.filter((user) => user._id !== userId));
 
-            // Show success alert
-            showAutoCloseAlert('User deleted successfully.');
-        }
-    } catch (error) {
-        // In case of an error, show an error alert
-        console.error('Error deleting user:', error);
-        showAutoError('Failed to delete user. Please try again.');
-    }
+//             // Show success alert
+//             showAutoCloseAlert('User deleted successfully.');
+//         }
+//     } catch (error) {
+//         // In case of an error, show an error alert
+//         console.error('Error deleting user:', error);
+//         showAutoError('Failed to delete user. Please try again.');
+//     }
+// };
+
+
+const handleDelete = async (userId) => {
+  const token = localStorage.getItem('admin_token');
+
+  // Show confirmation dialog before deleting the user
+  const isConfirmed = window.confirm('Are you sure you want to delete this user?');
+  
+  if (!isConfirmed) return; // If user cancels, do nothing
+
+  try {
+      // Trigger the API call to delete the user
+      const response = await axios.delete(`http://34.47.154.170/api/admin/user/delete/${userId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // If the response is successful (status code 200)
+      if (response.status === 200) {
+          // Remove the deleted user from the list in the state
+          setUsers((prevUsers) => prevUsers.filter((user) => user._id !== userId));
+
+          // Show success alert
+          showAutoCloseAlert('User deleted successfully.');
+      }
+  } catch (error) {
+      // In case of an error, show an error alert
+      console.error('Error deleting user:', error);
+      showAutoError('Failed to delete user. Please try again.');
+  }
 };
-
-
-
 
 
   return (

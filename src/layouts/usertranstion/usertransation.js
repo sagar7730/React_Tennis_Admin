@@ -150,7 +150,7 @@ function Usertransation() {
       )}
 
       {/* Modal to display player details */}
-      <Modal show={showModal} onHide={handleCloseModal} centered size='lg'>
+      {/* <Modal show={showModal} onHide={handleCloseModal} centered size='lg'>
         <Modal.Header closeButton>
           <Modal.Title>Player Details</Modal.Title>
         </Modal.Header>
@@ -191,7 +191,66 @@ function Usertransation() {
             Close
           </Button>
         </Modal.Footer>
-      </Modal>
+      </Modal> */}
+      <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
+  <Modal.Header closeButton>
+    <Modal.Title>Player Details</Modal.Title>
+  </Modal.Header>
+  <Modal.Body className="modal-body-scroll">
+    {selectedPlayers.length > 0 ? (
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th>Player Name</th>
+            <th>Profile Image</th>
+            <th>Value</th>
+            <th>Share Quantity</th>
+            {/* Conditionally render extra columns based on player type */}
+            {(selectedPlayers.some(player => player.type === 'sell' || player.type === 'remove' || player.type === 'buy')) && (
+              <>
+                <th>Sell Share Quantity</th>
+                <th>Profit / Loss</th>
+                <th>Type</th>
+              </>
+            )}
+          </tr>
+        </thead>
+        <tbody>
+          {selectedPlayers.map((player) => (
+            <tr key={player.player_id}>
+              <td>{player.name}</td>
+              <td>
+                <img
+                  src={`http://34.47.154.170/api/images/${player.profile_image}`}
+                  alt={player.name}
+                  style={{ width: "50px", height: "50px", borderRadius: "50%" }}
+                />
+              </td>
+              <td>{player.value}</td>
+              <td>{player.original_share_quantity || player.share_quantity}</td>
+
+              {/* Conditionally render table rows based on player type */}
+              {(player.type === 'sell' || player.type === 'remove' || player.type === 'buy') && (
+                <>
+                  <td>{player.sell_share_quantity}</td>
+                  <td>{player.profit_loss}</td>
+                  <td>{player.type}</td>
+                </>
+              )}
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    ) : (
+      <Alert variant="info">No player details available.</Alert>
+    )}
+  </Modal.Body>
+  <Modal.Footer>
+    <Button variant="secondary" onClick={handleCloseModal}>
+      Close
+    </Button>
+  </Modal.Footer>
+</Modal>
     </DashboardLayout>
   );
 }
