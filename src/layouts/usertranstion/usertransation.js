@@ -19,14 +19,46 @@ function Usertransation() {
   const itemsPerPage = 20; // Number of items per page
 
   const [searchTerm, setSearchTerm] = useState("");
-  // Filter items based on searchTerm
-  const filteredItems = transactions.filter((transaction) => {
+  const [sortConfig, setSortConfig] = useState({ key: 'updatedAt', direction: 'descending' });
+
+  const sortedItems = [...transactions].sort((a, b) => {
+      let aValue, bValue;
+      if (sortConfig.key === 'name') {
+          aValue = a.user_data.name.toLowerCase();
+          bValue = b.user_data.name.toLowerCase();
+      } else if (sortConfig.key === 'email') {
+          aValue = a.user_data.email.toLowerCase();
+          bValue = b.user_data.email.toLowerCase();
+      } else {
+          aValue = new Date(a.updatedAt).getTime();
+          bValue = new Date(b.updatedAt).getTime();
+      }
+  
+      if (aValue < bValue) return sortConfig.direction === 'ascending' ? -1 : 1;
+      if (aValue > bValue) return sortConfig.direction === 'ascending' ? 1 : -1;
+      return 0;
+  });
+  
+  const handleSort = (key) => {
+      let direction = 'ascending';
+      if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+          direction = 'descending';
+      }
+      setSortConfig({ key, direction });
+  };
+  
+  const filteredItems = sortedItems.filter((transaction) => {
     const name = transaction.user_data.name.toLowerCase();
     const email = transaction.user_data.email.toLowerCase();
+    const timestamp = new Date(transaction.updatedAt).toLocaleDateString();
+    const searchLower = searchTerm.toLowerCase();
+
     return (
-      name.includes(searchTerm.toLowerCase()) || email.includes(searchTerm.toLowerCase())
+        name.includes(searchLower) || 
+        email.includes(searchLower) || 
+        timestamp.includes(searchLower)
     );
-  });
+});
 
 
   // Function to fetch transactions from the API
@@ -97,12 +129,12 @@ function Usertransation() {
           <Table striped bordered hover>
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Email</th>
+                <th  onClick={() => handleSort('name')} style={{ cursor: 'pointer' }}>Name</th>
+                <th onClick={() => handleSort('email')} style={{ cursor: 'pointer' }}>Email</th>
                 <th>Opening Credits</th>
                 <th>Closing Credits</th>
                 <th>Total Credits</th>
-                <th>Time Stamp</th>
+                <th onClick={() => handleSort('updatedAt')} style={{ cursor: 'pointer' }}>Time Stamp</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -192,7 +224,7 @@ function Usertransation() {
           </Button>
         </Modal.Footer>
       </Modal> */}
-      <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
+<Modal show={showModal} onHide={handleCloseModal} centered size="lg">
   <Modal.Header closeButton>
     <Modal.Title>Player Details</Modal.Title>
   </Modal.Header>
@@ -251,6 +283,8 @@ function Usertransation() {
     </Button>
   </Modal.Footer>
 </Modal>
+
+
     </DashboardLayout>
   );
 }
