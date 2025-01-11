@@ -19,46 +19,49 @@ function Usertransation() {
   const itemsPerPage = 20; // Number of items per page
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortConfig, setSortConfig] = useState({ key: 'updatedAt', direction: 'descending' });
+const [sortConfig, setSortConfig] = useState({ key: "updatedAt", direction: "descending" });
 
-  const sortedItems = [...transactions].sort((a, b) => {
-      let aValue, bValue;
-      if (sortConfig.key === 'name') {
-          aValue = a.user_data.name.toLowerCase();
-          bValue = b.user_data.name.toLowerCase();
-      } else if (sortConfig.key === 'email') {
-          aValue = a.user_data.email.toLowerCase();
-          bValue = b.user_data.email.toLowerCase();
-      } else {
-          aValue = new Date(a.updatedAt).getTime();
-          bValue = new Date(b.updatedAt).getTime();
-      }
-  
-      if (aValue < bValue) return sortConfig.direction === 'ascending' ? -1 : 1;
-      if (aValue > bValue) return sortConfig.direction === 'ascending' ? 1 : -1;
-      return 0;
-  });
-  
-  const handleSort = (key) => {
-      let direction = 'ascending';
-      if (sortConfig.key === key && sortConfig.direction === 'ascending') {
-          direction = 'descending';
-      }
-      setSortConfig({ key, direction });
-  };
-  
-  const filteredItems = sortedItems.filter((transaction) => {
-    const name = transaction.user_data.name.toLowerCase();
-    const email = transaction.user_data.email.toLowerCase();
-    const timestamp = new Date(transaction.updatedAt).toLocaleDateString();
-    const searchLower = searchTerm.toLowerCase();
+const handleSort = (key) => {
+  let direction = "ascending";
+  if (sortConfig.key === key && sortConfig.direction === "ascending") {
+    direction = "descending";
+  }
+  setSortConfig({ key, direction });
+};
 
-    return (
-        name.includes(searchLower) || 
-        email.includes(searchLower) || 
-        timestamp.includes(searchLower)
-    );
+const sortedItems = [...transactions].sort((a, b) => {
+  let aValue, bValue;
+
+  // Handle sorting based on column key
+  if (sortConfig.key === "name") {
+    aValue = a.user_data.name.toLowerCase();
+    bValue = b.user_data.name.toLowerCase();
+  } else if (sortConfig.key === "email") {
+    aValue = a.user_data.email.toLowerCase();
+    bValue = b.user_data.email.toLowerCase();
+  } else {
+    aValue = new Date(a.updatedAt).getTime();
+    bValue = new Date(b.updatedAt).getTime();
+  }
+
+  if (aValue < bValue) return sortConfig.direction === "ascending" ? -1 : 1;
+  if (aValue > bValue) return sortConfig.direction === "ascending" ? 1 : -1;
+  return 0;
 });
+
+const filteredItems = sortedItems.filter((transaction) => {
+  const name = transaction.user_data.name.toLowerCase();
+  const email = transaction.user_data.email.toLowerCase();
+  const timestamp = new Date(transaction.updatedAt).toLocaleDateString();
+  const searchLower = searchTerm.toLowerCase();
+
+  return (
+    name.includes(searchLower) ||
+    email.includes(searchLower) ||
+    timestamp.includes(searchLower)
+  );
+});
+
 
 
   // Function to fetch transactions from the API
@@ -127,39 +130,45 @@ function Usertransation() {
       ) : (
         <>
           <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th  onClick={() => handleSort('name')} style={{ cursor: 'pointer' }}>Name</th>
-                <th onClick={() => handleSort('email')} style={{ cursor: 'pointer' }}>Email</th>
-                <th>Opening Credits</th>
-                <th>Closing Credits</th>
-                <th>Total Credits</th>
-                <th onClick={() => handleSort('updatedAt')} style={{ cursor: 'pointer' }}>Time Stamp</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentItems.map((transaction) => (
-                <tr key={transaction._id}>
-                  <td>{transaction.user_data.name}</td>
-                  <td>{transaction.user_data.email}</td>
-                  <td>{Number(transaction.opening_credits).toFixed(2)}</td>
-                  <td>{Number(transaction.closing_credits).toFixed(2)}</td>
-                  <td>{Number(transaction.total_credits).toFixed(2)}</td>
-
-                  <td>
-                    {new Date(transaction.updatedAt).toLocaleDateString()}{" "}
-                  </td>
-
-                  <td>
-                    <Button variant="primary" onClick={() => handleViewPlayers(transaction.players_data)}>
-                      <i className="bi bi-eye"></i>
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
+        <thead>
+          <tr>
+            <th onClick={() => handleSort("name")} style={{ cursor: "pointer" }}>
+              Name {sortConfig.key === "name" && (sortConfig.direction === "ascending" ? "▲" : "▼")}
+            </th>
+            <th onClick={() => handleSort("email")} style={{ cursor: "pointer" }}>
+              Email {sortConfig.key === "email" && (sortConfig.direction === "ascending" ? "▲" : "▼")}
+            </th>
+            <th>Opening Credits</th>
+            <th>Closing Credits</th>
+            <th>Total Credits</th>
+            <th onClick={() => handleSort("updatedAt")} style={{ cursor: "pointer" }}>
+              Time Stamp{" "}
+              {sortConfig.key === "updatedAt" && (sortConfig.direction === "ascending" ? "▲" : "▼")}
+            </th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredItems.map((transaction) => (
+            <tr key={transaction._id}>
+              <td>{transaction.user_data.name}</td>
+              <td>{transaction.user_data.email}</td>
+              <td>{Number(transaction.opening_credits).toFixed(2)}</td>
+              <td>{Number(transaction.closing_credits).toFixed(2)}</td>
+              <td>{Number(transaction.total_credits).toFixed(2)}</td>
+              <td>{new Date(transaction.updatedAt).toLocaleDateString()}</td>
+              <td>
+                <Button
+                  variant="primary"
+                  onClick={() => handleViewPlayers(transaction.players_data)}
+                >
+                  <i className="bi bi-eye"></i>
+                </Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
           <footer className="mt-4">
             <Row className="align-items-center">
               <Col xs={12} md={6} className="mb-2 mb-md-0">
