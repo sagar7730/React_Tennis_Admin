@@ -211,14 +211,10 @@
 // export default Faq;
 
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Modal, Form, Card, Row, Col } from "react-bootstrap";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
 import axios from "axios";
 import Swal from "sweetalert2";
- import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
- import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 
 function Faq() {
     const [show, setShow] = useState(false);
@@ -229,37 +225,17 @@ function Faq() {
     const [faqs, setFaqs] = useState([]);
     const [currentFaqId, setCurrentFaqId] = useState(null);
 
-    const showAutoCloseAlert = (message) => {
-        Swal.fire({
-            position: "top-end",
-            icon: "success",
-            title: message,
-            showConfirmButton: false,
-            timer: 1500,
-        });
-    };
-
-    const showAutoError = (message) => {
-        Swal.fire({
-            position: "top-end",
-            icon: "error",
-            title: message,
-            showConfirmButton: false,
-            timer: 3000,
-        });
-    };
-
+    // Fetch FAQs from the server
     const fetchFaqs = async () => {
         try {
             const token = localStorage.getItem("admin_token");
-            const response = await axios.get("http://34.47.154.170/api/admin/faqs", {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
+            const response = await axios.get("/api/admin/faqs", {
+                headers: { Authorization: `Bearer ${token}` },
             });
             setFaqs(response.data);
         } catch (error) {
             console.error("Error fetching FAQs:", error);
+            Swal.fire("Error", "Failed to fetch FAQs. Please try again.", "error");
         }
     };
 
@@ -275,87 +251,57 @@ function Faq() {
 
     const handleClose = () => setShow(false);
 
-    const handlePostData = (e) => {
+    const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
-    };
-
-    const handleAnswerChange = (value) => {
-        setFormData((prevData) => ({
-            ...prevData,
-            answer: value,
-        }));
+        setFormData({ ...formData, [name]: value });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const token = localStorage.getItem("admin_token");
         const url = currentFaqId
-            ? `http://34.47.154.170/api/admin/faq/edit/${currentFaqId}`
-            : "http://34.47.154.170/api/admin/faq/create";
+            ? `/api/admin/faq/edit/${currentFaqId}`
+            : "/api/admin/faq/create";
 
         try {
-            const response = await axios[currentFaqId ? "put" : "post"](url, formData, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
+            await axios[currentFaqId ? "put" : "post"](url, formData, {
+                headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
             });
-
-            if (currentFaqId) {
-                setFaqs((prevFaqs) =>
-                    prevFaqs.map((faq) =>
-                        faq._id === currentFaqId ? { ...faq, ...formData } : faq
-                    )
-                );
-            } else {
-                setFaqs((prevFaqs) => [...prevFaqs, { _id: response.data._id, ...formData }]);
-            }
             await fetchFaqs();
             handleClose();
-            showAutoCloseAlert("FAQ saved successfully.");
+            Swal.fire("Success", "FAQ saved successfully.", "success");
         } catch (error) {
-            console.error("Error saving FAQ:", error.response ? error.response.data : error);
-            showAutoError("Failed to save FAQ. Please try again.");
+            console.error("Error saving FAQ:", error);
+            Swal.fire("Error", "Failed to save FAQ. Please try again.", "error");
         }
     };
 
     const handleDelete = async (faqId) => {
         const token = localStorage.getItem("admin_token");
-
         try {
-            await axios.delete(`http://34.47.154.170/api/admin/faq/delete/${faqId}`, {
+            await axios.delete(`/api/admin/faq/delete/${faqId}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            await fetchFaqs();
-            setFaqs((prevFaqs) => prevFaqs.filter((faq) => faq._id !== faqId));
-            showAutoCloseAlert("FAQ deleted successfully.");
+            setFaqs(faqs.filter((faq) => faq._id !== faqId));
+            Swal.fire("Success", "FAQ deleted successfully.", "success");
         } catch (error) {
             console.error("Error deleting FAQ:", error);
-            showAutoError("Failed to delete FAQ. Please try again.");
+            Swal.fire("Error", "Failed to delete FAQ. Please try again.", "error");
         }
     };
 
     const handleEdit = (id) => {
         const faq = faqs.find((item) => item._id === id);
         if (faq) {
-            setFormData({
-                question: faq.question,
-                answer: faq.answer,
-            });
+            setFormData({ question: faq.question, answer: faq.answer });
             setCurrentFaqId(id);
             setShow(true);
         }
     };
 
     return (
-                 <DashboardLayout>
-            <DashboardNavbar />
-        <div>
-            <Button variant="primary" onClick={handleShow} style={{ marginBottom: "10px" }}>
+        <div style={{ padding: "20px" }}>
+            <Button variant="primary" onClick={handleShow}>
                 Add FAQ
             </Button>
 
@@ -370,85 +316,67 @@ function Faq() {
                             <Form.Control
                                 type="text"
                                 placeholder="Enter your question"
-                                value={formData.question}
-                                onChange={handlePostData}
                                 name="question"
+                                value={formData.question}
+                                onChange={handleInputChange}
                                 required
                             />
                         </Form.Group>
                         <Form.Group controlId="formAnswer">
                             <Form.Label>Answer</Form.Label>
-                            <ReactQuill
+                            <Form.Control
+                                as="textarea"
+                                rows={5}
+                                placeholder="Enter the answer"
+                                name="answer"
                                 value={formData.answer}
-                                onChange={handleAnswerChange}
-                                modules={{
-                                    toolbar: [
-                                        ["bold", "italic", "underline", "strike"],
-                                        [{ list: "ordered" }, { list: "bullet" }],
-                                        ["link"],
-                                    ],
-                                }}
-                                theme="snow"
+                                onChange={handleInputChange}
+                                required
                             />
                         </Form.Group>
                         <Modal.Footer>
-                            <Button variant="primary" type="submit">
-                                {currentFaqId ? "Update" : "Submit"}
-                            </Button>
                             <Button variant="secondary" onClick={handleClose}>
                                 Close
+                            </Button>
+                            <Button variant="primary" type="submit">
+                                {currentFaqId ? "Update" : "Submit"}
                             </Button>
                         </Modal.Footer>
                     </Form>
                 </Modal.Body>
             </Modal>
 
-            <Row xs={1} sm={2} md={3} className="g-4">
+            <Row xs={1} sm={2} md={3} className="g-4" style={{ marginTop: "20px" }}>
                 {faqs.map((faq, index) => (
                     <Col key={faq._id}>
-                        <Card
-                            style={{
-                                height: "100%",
-                                borderRadius: "5px",
-                                backgroundColor: "#c5c5c5eb",
-                                color: "black",
-                            }}
-                        >
+                        <Card style={{ height: "100%", backgroundColor: "#f8f9fa" }}>
                             <Card.Body>
                                 <Card.Title>{`${index + 1}. ${faq.question}`}</Card.Title>
-                                <Card.Text
-                                    dangerouslySetInnerHTML={{ __html: faq.answer }}
-                                />
-                                <div className="d-flex">
-                                    <Button
-                                        onClick={() => handleEdit(faq._id)}
-                                        style={{
-                                            backgroundColor: "black",
-                                            border: "none",
-                                            marginRight: "5px",
-                                        }}
-                                    >
-                                        <i className="bi bi-pencil-square"></i>
-                                    </Button>
-                                    <Button
-                                        variant="danger"
-                                        onClick={() => handleDelete(faq._id)}
-                                        style={{ backgroundColor: "black", border: "none" }}
-                                    >
-                                        <i className="bi bi-trash3"></i>
-                                    </Button>
-                                </div>
+                                <Card.Text>{faq.answer}</Card.Text>
+                                <Button
+                                    variant="warning"
+                                    onClick={() => handleEdit(faq._id)}
+                                    style={{ marginRight: "10px" }}
+                                >
+                                    Edit
+                                </Button>
+                                <Button
+                                    variant="danger"
+                                    onClick={() => handleDelete(faq._id)}
+                                >
+                                    Delete
+                                </Button>
                             </Card.Body>
                         </Card>
                     </Col>
                 ))}
             </Row>
         </div>
-        </DashboardLayout>
     );
 }
 
 export default Faq;
+
 
 
 // import React, { useEffect, useRef, useState } from 'react';
