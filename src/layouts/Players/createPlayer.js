@@ -209,6 +209,8 @@ function CreatePlayer() {
         })
         .then((response) => {
           setProductData(response.data.data || []);
+          console.log(response);
+          
         })
         .catch((error) => showAutoError("Error fetching player data:", error));
     };
